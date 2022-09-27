@@ -1,18 +1,23 @@
 package com.example.shiro.config;
 
+import com.example.shiro.dto.JwtToken;
 import com.example.shiro.dto.UserDto;
 import com.example.shiro.service.IUserService;
+import com.example.shiro.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 
 import javax.annotation.Resource;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * @Description TODO
@@ -23,8 +28,6 @@ public class UserRealm extends AuthorizingRealm {
 
     @Resource
     private IUserService userService;
-    //@Resource
-    //private IPermissionService permissionService;
 
     /**
      * 执行授权逻辑
@@ -68,18 +71,19 @@ public class UserRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        System.out.println("执行认证逻辑");
-        /**
-         * 判断ShiroRealm逻辑UsernamePasswordToken是否正确
-         */
-        //1判断用户名
-        UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
-        UserDto user = userService.findByUserName(usernamePasswordToken.getUsername());
-        if (user == null) {
-            //用户名不存在
-            return null;
+        //4、获取拦截到的token实体类并认证
+        JwtToken jwtToken = (JwtToken) authenticationToken;
+        Claims claims = JwtUtil.parseToken(jwtToken.getToken());
+        if (Objects.isNull(claims)) {
+            throw new AuthenticationException("无效的token");
         }
-        //判断密码是否正确
-        return new SimpleAuthenticationInfo(user, user.getPassword(), "");
+
+        Long userId = Long.parseLong(claims.getSubject());
+        UserDto userDto = UserDto.builder()
+                .id(userId)
+                .build();
+        //5、判断密码是否正确并放行
+        return new SimpleAuthenticationInfo(userDto, jwtToken.getToken(), "");
     }
+
 }

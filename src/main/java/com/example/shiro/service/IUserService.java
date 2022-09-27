@@ -4,7 +4,6 @@ import com.example.shiro.dto.UserDto;
 
 public interface IUserService {
 
-    UserDto findById(String id);
+    UserDto findById(Long id);
 
-    UserDto findByUserName(String username);
 }

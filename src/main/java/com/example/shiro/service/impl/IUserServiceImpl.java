@@ -14,19 +14,13 @@ import org.springframework.stereotype.Service;
 public class IUserServiceImpl implements IUserService {
 
     @Override
-    public UserDto findById(String id) {
-        UserDto user = new UserDto();
-        user.setId(id);
-        user.setUserName("Ricky");
-        user.setPassword("123456");
+    public UserDto findById(Long id) {
+        UserDto user = UserDto.builder()
+                .id(id)
+                .userName("Ricky")
+                .password("123456")
+                .build();
         return user;
     }
 
-    @Override
-    public UserDto findByUserName(String username) {
-        UserDto user = new UserDto();
-        user.setUserName(username);
-        user.setPassword("123456");
-        return user;
-    }
 }

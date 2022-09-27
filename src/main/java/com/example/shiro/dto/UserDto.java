@@ -1,5 +1,6 @@
 package com.example.shiro.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -9,9 +10,10 @@ import lombok.Data;
  */
 
 @Data
+@Builder
 public class UserDto {
 
-    String id;
+    Long id;
 
     String userName;
 

@@ -1,14 +1,13 @@
 package com.example.shiro.controller;
 
 import com.example.shiro.dto.UserDto;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 /**
  * @Description TODO
@@ -21,33 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
 
     @RequestMapping("/login")
-    public String login(UserDto user) {
-        //1：获取subject
-        Subject subject = SecurityUtils.getSubject();
-        //2:封装用户账号和密码
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword());
-        //3:执行登录方法
-        try {
-            subject.login(usernamePasswordToken);
-            //登录成功
-            //成功后跳转到
-            //return "redirect:/test";
-            return "登录成功";
-        } catch (UnknownAccountException e) {
-            //e.printStackTrace();
-            //登录失败用户名不存在
-            return "登录失败：用户名不存在";
-        } catch (IncorrectCredentialsException e) {
-            //登录失败密码错误
-            return "登录失败：密码错误";
-        }
+    public String login(@RequestBody UserDto user) {
+        //1、假设账号密码认证正确
+        //2、返回token
+        Date expireDate = new Date(new Date().getTime() + 600000 * 1000);
+        return Jwts.builder()
+                .setHeaderParam("typ", "JWT")
+                .setSubject(user.getId() + "")
+                .setIssuedAt(new Date())
+                .setExpiration(expireDate)
+                .compact();
     }
 
-    @RequestMapping("/getLoginUser")
-    public String getLoginUser() {
-        Subject subject = SecurityUtils.getSubject();
-        return subject.getPrincipal().toString();
-    }
 }
 
 
