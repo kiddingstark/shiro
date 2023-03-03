@@ -22,7 +22,7 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
 
-    @Bean
+    @Bean("shiroFilter")
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("securityManager") DefaultWebSecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         //设置安全管理器

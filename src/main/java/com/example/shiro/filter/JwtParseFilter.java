@@ -1,7 +1,7 @@
 package com.example.shiro.filter;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.example.shiro.TokenConstant;
+import com.example.shiro.constant.TokenConstant;
 import com.example.shiro.dto.JwtToken;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;

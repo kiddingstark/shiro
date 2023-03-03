@@ -1,4 +1,4 @@
-package com.example.shiro;
+package com.example.shiro.constant;
 
 /**
  * @author: zhengruihong
